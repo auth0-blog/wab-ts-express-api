@@ -8,6 +8,8 @@ import { Item } from "./item.interface";
 import { Items } from "./items.interface";
 
 import { checkJwt } from "../middleware/authz.middleware";
+import { checkPermissions } from "../middleware/rbac.middleware";
+import { ItemPermissions } from "./item-permissions";
 
 /**
  * Router Definition
@@ -51,41 +53,53 @@ itemsRouter.use(checkJwt);
 
 // POST items/
 
-itemsRouter.post("/", async (req: Request, res: Response) => {
-  try {
-    const item: Item = req.body.item;
+itemsRouter.post(
+  "/",
+  [checkJwt, checkPermissions(ItemPermissions.CreateItems)],
+  async (req: Request, res: Response) => {
+    try {
+      const item: Item = req.body.item;
 
-    await ItemService.create(item);
+      await ItemService.create(item);
 
-    res.sendStatus(201);
-  } catch (e) {
-    res.status(404).send(e.message);
+      res.sendStatus(201);
+    } catch (e) {
+      res.status(404).send(e.message);
+    }
   }
-});
+);
 
 // PUT items/
 
-itemsRouter.put("/", async (req: Request, res: Response) => {
-  try {
-    const item: Item = req.body.item;
+itemsRouter.put(
+  "/",
+  [checkJwt, checkPermissions(ItemPermissions.UpdateItems)],
+  async (req: Request, res: Response) => {
+    try {
+      const item: Item = req.body.item;
 
-    await ItemService.update(item);
+      await ItemService.update(item);
 
-    res.sendStatus(200);
-  } catch (e) {
-    res.status(500).send(e.message);
+      res.sendStatus(200);
+    } catch (e) {
+      res.status(500).send(e.message);
+    }
   }
-});
+);
 
 // DELETE items/:id
 
-itemsRouter.delete("/:id", async (req: Request, res: Response) => {
-  try {
-    const id: number = parseInt(req.params.id, 10);
-    await ItemService.remove(id);
+itemsRouter.delete(
+  "/:id",
+  [checkJwt, checkPermissions(ItemPermissions.DeleteItems)],
+  async (req: Request, res: Response) => {
+    try {
+      const id: number = parseInt(req.params.id, 10);
+      await ItemService.remove(id);
 
-    res.sendStatus(200);
-  } catch (e) {
-    res.status(500).send(e.message);
+      res.sendStatus(200);
+    } catch (e) {
+      res.status(500).send(e.message);
+    }
   }
-});
+);
