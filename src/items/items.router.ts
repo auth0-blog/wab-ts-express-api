@@ -8,7 +8,7 @@ import { Item } from "./item.interface";
 import { Items } from "./items.interface";
 
 import { checkJwt } from "../middleware/authz.middleware";
-import { checkPermissions } from "../middleware/rbac.middleware";
+import { checkPermissions } from "../middleware/permissions.middleware";
 import { ItemPermissions } from "./item-permissions";
 
 /**
@@ -55,7 +55,7 @@ itemsRouter.use(checkJwt);
 
 itemsRouter.post(
   "/",
-  [checkJwt, checkPermissions(ItemPermissions.CreateItems)],
+  checkPermissions(ItemPermissions.CreateItems),
   async (req: Request, res: Response) => {
     try {
       const item: Item = req.body.item;
@@ -73,7 +73,7 @@ itemsRouter.post(
 
 itemsRouter.put(
   "/",
-  [checkJwt, checkPermissions(ItemPermissions.UpdateItems)],
+  checkPermissions(ItemPermissions.UpdateItems),
   async (req: Request, res: Response) => {
     try {
       const item: Item = req.body.item;
@@ -91,7 +91,7 @@ itemsRouter.put(
 
 itemsRouter.delete(
   "/:id",
-  [checkJwt, checkPermissions(ItemPermissions.DeleteItems)],
+  checkPermissions(ItemPermissions.DeleteItems),
   async (req: Request, res: Response) => {
     try {
       const id: number = parseInt(req.params.id, 10);
