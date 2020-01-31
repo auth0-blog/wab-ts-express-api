@@ -45,7 +45,7 @@ touch .env
 
 ```bash
 PORT=7000
-AUTH0_DOMAIN="Your Auth0 domain"
+AUTH0_ISSUER="Your Auth0 domain"
 AUTH0_AUDIENCE="Your Auth0 audience"
 ```
 
